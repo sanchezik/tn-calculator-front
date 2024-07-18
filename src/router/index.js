@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import PageProfile from '../components/PageProfile.vue';
-import PageCalc from '../components/PageProfile.vue';
-import PageHistory from '../components/PageProfile.vue';
+import PageCalc from '../components/PageCalc.vue';
+import PageHistory from '../components/PageHistory.vue';
 
 Vue.use(VueRouter);
 
