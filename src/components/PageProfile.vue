@@ -36,18 +36,28 @@ export default {
     async makeLoginRequest() {
       $("#signInErrMsg").html("");
       $("#signInInfoMsg").html("");
+
       let data = {
         username: $.trim($("#username").val()),
         password: $.trim($("#password").val())
       }
-      $.post("http://176.57.184.98:5000/login", data)
-          .done(function (result) {
-            // this.response = res.data;
-            $("#signInInfoMsg").html("Hello, " + result["user"]["username"]);
-          })
-          .fail(function (result) {
-            $("#signInErrMsg").html(result.responseJSON["errors"]);
-          });
+      $.ajax({
+        type: 'POST',
+        url: "http://127.0.0.1:5000/login",
+        data: data,
+        // xhrFields: {
+        //   withCredentials: true
+        // },
+        crossDomain: true,
+        success: function (result, status, xhr) {
+          console.log(xhr.getResponseHeader('Set-Cookie'))
+          $("#signInInfoMsg").html("Hello, " + result["user"]["username"]);
+        },
+        error: function (result) {
+          $("#signInErrMsg").html(result);
+          // $("#signInErrMsg").html(result.responseJSON["errors"]);
+        }
+      });
     },
     async makeLogoutRequest() {
       $("#signOutErrMsg").html("");
