@@ -15,7 +15,7 @@
         <tr>
           <th>date</th>
           <th>operation cost</th>
-          <th>your balance</th>
+          <th>balance left</th>
           <th>operation type</th>
           <th>response</th>
         </tr>

@@ -18,6 +18,13 @@
       </div>
       <b-button @click="makeLoginRequest" style="width: 300px;">Sign in</b-button>
     </div>
+    <div class="alert alert-warning w-50 my-5" role="alert">
+      Feel free to use one of 2 users in DB:
+      <br>
+      login: <b>user1</b> password: <b>user1</b>
+      <br>
+      login: <b>user2</b> password: <b>user2</b>
+    </div>
   </div>
 </template>
 
