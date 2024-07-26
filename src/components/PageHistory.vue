@@ -59,8 +59,8 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.fetchingData = false
-            if (data["error"]) {
-              this.errors = data["error"]
+            if (data["errors"]) {
+              this.errors = data["errors"]
             } else {
               this.records = data["records"]
             }
