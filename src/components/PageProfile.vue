@@ -45,6 +45,9 @@ export default {
         type: 'POST',
         url: "http://127.0.0.1:5000/login",
         data: data,
+        xhrFields: {
+          withCredentials: true
+        },
         crossDomain: true,
         success: function (result) {
           $("#signInInfoMsg").html("Hello, " + result["user"]["username"]);
@@ -60,14 +63,17 @@ export default {
       $("#signOutInfoMsg").html("");
       fetch(`http://127.0.0.1:5000/logout`, {
         method: "POST",
-        credentials: 'include',
+        credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),
         body: JSON.stringify({})
-      }).then(response => {
-        $("#signOutInfoMsg").html(response["records"]);
-      }).catch(error => {
-        console.error('Error adding allergy:', error);
-      });
+      })
+          .then(response => response.json())
+          .then(data => {
+            $("#signOutInfoMsg").html(data["message"]);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
     },
   },
 };
