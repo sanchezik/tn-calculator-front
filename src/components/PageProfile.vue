@@ -45,7 +45,7 @@ export default {
         return
       }
       this.errorMessage = null
-      fetch(`http://127.0.0.1:5000/login`, {
+      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/login`, {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),
@@ -70,7 +70,7 @@ export default {
     },
     async makeLogoutRequest() {
       this.errorMessage = null
-      fetch(`http://127.0.0.1:5000/logout`, {
+      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/logout`, {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),

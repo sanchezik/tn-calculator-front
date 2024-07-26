@@ -50,7 +50,7 @@ export default {
       this.fetchingData = true
       this.errors = null
       this.records = null
-      fetch(`http://127.0.0.1:5000/my-records`, {
+      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/my-records`, {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),
