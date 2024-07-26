@@ -1,7 +1,7 @@
 <template>
   <div class="p-5 d-flex flex-column align-items-center">
     <div v-if="fetchingData" class="spinner-border text-secondary" role="status"></div>
-    <div v-if="errors" class="text-danger">{{ errors }}</div>
+    <div v-if="errors" class="text-danger mb-4">{{ errors }}</div>
     <div v-if="records" class="w-100 d-flex justify-content-center">
       <table class="text-center w-75">
         <colgroup>
@@ -59,7 +59,11 @@ export default {
           .then(response => response.json())
           .then(data => {
             this.fetchingData = false
-            this.records = data["records"]
+            if (data["error"]) {
+              this.errors = data["error"]
+            } else {
+              this.records = data["records"]
+            }
           })
           .catch(error => {
             this.fetchingData = false

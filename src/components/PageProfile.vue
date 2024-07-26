@@ -1,66 +1,58 @@
 <template>
   <div class="p-5 d-flex flex-column align-items-center">
-    <div v-if="response">
-      <pre>{{ response }}</pre>
+    <div v-if="errorMessage" class="text-danger mb-3">{{ errorMessage }}</div>
+    <div v-if="user">
+      <div class="mb-5 h3">Hello, {{ user.username }}</div>
+      <b-button @click="makeLogoutRequest" style="width: 300px;">Sign out</b-button>
     </div>
-    <div class="w-50 mb-3">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+    <div v-else>
+      <div class="mb-3">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter password" required>
-      </div>
+      <b-button @click="makeLoginRequest" style="width: 300px;">Sign in</b-button>
     </div>
-    <b-button @click="makeLoginRequest" style="width: 300px;">Sign in</b-button>
-    <div id="signInErrMsg" class="text-danger my-1"></div>
-    <div id="signInInfoMsg" class="text-success my-1"></div>
-    <h2 class="my-5">or</h2>
-    <b-button @click="makeLogoutRequest" style="width: 300px;">Sign out</b-button>
-    <div id="signOutErrMsg" class="text-danger my-1"></div>
-    <div id="signOutInfoMsg" class="text-success my-1"></div>
   </div>
 </template>
 
 <script>
-import $ from 'jquery';
-
 export default {
   data() {
     return {
-      response: null,
+      user: JSON.parse(localStorage.getItem('user')),
+      errorMessage: null
     };
   },
   methods: {
     async makeLoginRequest() {
-      $("#signInErrMsg").html("");
-      $("#signInInfoMsg").html("");
-
-      let data = {
-        username: $.trim($("#username").val()),
-        password: $.trim($("#password").val())
-      }
-      $.ajax({
-        type: 'POST',
-        url: "http://127.0.0.1:5000/login",
-        data: data,
-        xhrFields: {
-          withCredentials: true
-        },
-        crossDomain: true,
-        success: function (result) {
-          $("#signInInfoMsg").html("Hello, " + result["user"]["username"]);
-        },
-        error: function (result) {
-          $("#signInErrMsg").html(result);
-          // $("#signInErrMsg").html(result.responseJSON["errors"]);
-        }
-      });
+      this.errorMessage = null
+      fetch(`http://127.0.0.1:5000/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: new Headers({'content-type': 'application/json'}),
+        body: JSON.stringify({
+          username: "user1",
+          password: "user1",
+        })
+      })
+          .then(response => response.json())
+          .then(data => {
+            localStorage.setItem('user', JSON.stringify(data["user"]));
+            this.user = data["user"]
+          })
+          .catch(error => {
+            this.errorMessage = error
+            console.error('Error:', error);
+          });
     },
     async makeLogoutRequest() {
-      $("#signOutErrMsg").html("");
-      $("#signOutInfoMsg").html("");
+      this.errorMessage = null
       fetch(`http://127.0.0.1:5000/logout`, {
         method: "POST",
         credentials: "include",
@@ -69,10 +61,13 @@ export default {
       })
           .then(response => response.json())
           .then(data => {
-            $("#signOutInfoMsg").html(data["message"]);
+            console.log(data)
+            localStorage.setItem('user', JSON.stringify(null));
+            this.user = null
           })
           .catch(error => {
             console.error('Error:', error);
+            this.errorMessage = error
           });
     },
   },

@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import $ from 'jquery';
-
 export default {
   data() {
     return {
@@ -30,20 +28,7 @@ export default {
   },
   methods: {
     async makeLoginRequest() {
-      $("#signInErrMsg").html("");
-      $("#signInInfoMsg").html("");
-      let data = {
-        username: $.trim($("#username").val()),
-        password: $.trim($("#password").val())
-      }
-      $.post("http://176.57.184.98:5000/login", data)
-          .done(function (result) {
-            // this.response = res.data;
-            $("#signInInfoMsg").html("Hello, " + result["user"]["username"]);
-          })
-          .fail(function (result) {
-            $("#signInErrMsg").html(result.responseJSON["errors"]);
-          });
+      console.log("hehe")
     },
   },
 };
