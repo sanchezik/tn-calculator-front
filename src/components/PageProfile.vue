@@ -45,12 +45,8 @@ export default {
         type: 'POST',
         url: "http://127.0.0.1:5000/login",
         data: data,
-        // xhrFields: {
-        //   withCredentials: true
-        // },
         crossDomain: true,
-        success: function (result, status, xhr) {
-          console.log(xhr.getResponseHeader('Set-Cookie'))
+        success: function (result) {
           $("#signInInfoMsg").html("Hello, " + result["user"]["username"]);
         },
         error: function (result) {
@@ -62,13 +58,16 @@ export default {
     async makeLogoutRequest() {
       $("#signOutErrMsg").html("");
       $("#signOutInfoMsg").html("");
-      $.post("http://176.57.184.98:5000/logout", {})
-          .done(function (result) {
-            $("#signOutInfoMsg").html(result["message"]);
-          })
-          .fail(function () {
-            $("#signOutErrMsg").html("Unexpected error. Try again later");
-          });
+      fetch(`http://127.0.0.1:5000/logout`, {
+        method: "POST",
+        credentials: 'include',
+        headers: new Headers({'content-type': 'application/json'}),
+        body: JSON.stringify({})
+      }).then(response => {
+        $("#signOutInfoMsg").html(response["records"]);
+      }).catch(error => {
+        console.error('Error adding allergy:', error);
+      });
     },
   },
 };

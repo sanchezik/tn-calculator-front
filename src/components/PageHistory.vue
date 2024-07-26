@@ -19,13 +19,16 @@ export default {
     async getDataRequest() {
       $("#myRecords").html("");
       $("#requestErrMsg").html("");
-      $.post("http://176.57.184.98:5000/my-records", {})
-          .done(function (result) {
-            $("#myRecords").html(result["records"]);
-          })
-          .fail(function (result) {
-            $("#requestErrMsg").html(result.responseJSON["error"]);
-          });
+      fetch(`http://127.0.0.1:5000/my-records`, {
+        method: "POST",
+        credentials: 'include',
+        headers: new Headers({'content-type': 'application/json'}),
+        body: JSON.stringify({})
+      }).then(response => {
+        $("#myRecords").html(response["records"]);
+      }).catch(error => {
+        console.error('Error:', error);
+      });
     },
   },
 };

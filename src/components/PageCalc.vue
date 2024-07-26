@@ -5,21 +5,17 @@
     </div>
     <div class="w-50 mb-3">
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+        <label for="param1">Parameter 1</label>
+        <input type="number" class="form-control" id="param1" placeholder="Enter param 1">
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+        <label for="number">Parameter 2</label>
+        <input type="text" class="form-control" id="param2" placeholder="Enter param 2">
       </div>
     </div>
     <b-button @click="makeLoginRequest" style="width: 300px;">Sign in</b-button>
     <div id="signInErrMsg" class="text-danger my-1"></div>
     <div id="signInInfoMsg" class="text-success my-1"></div>
-    <h2 class="my-5">or</h2>
-    <b-button @click="makeLogoutRequest" style="width: 300px;">Sign out</b-button>
-    <div id="signOutErrMsg" class="text-danger my-1"></div>
-    <div id="signOutInfoMsg" class="text-success my-1"></div>
   </div>
 </template>
 
@@ -47,17 +43,6 @@ export default {
           })
           .fail(function (result) {
             $("#signInErrMsg").html(result.responseJSON["errors"]);
-          });
-    },
-    async makeLogoutRequest() {
-      $("#signOutErrMsg").html("");
-      $("#signOutInfoMsg").html("");
-      $.post("http://176.57.184.98:5000/logout", {})
-          .done(function (result) {
-            $("#signOutInfoMsg").html(result["message"]);
-          })
-          .fail(function () {
-            $("#signOutErrMsg").html("Unexpected error. Try again later");
           });
     },
   },
