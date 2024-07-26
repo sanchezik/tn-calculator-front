@@ -9,11 +9,11 @@
       <div class="mb-3">
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+          <input type="text" class="form-control" v-model="inputUsername" placeholder="Enter username" required>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+          <input type="password" class="form-control" v-model="inputPassword" placeholder="Enter password" required>
         </div>
       </div>
       <b-button @click="makeLoginRequest" style="width: 300px;">Sign in</b-button>
@@ -26,25 +26,35 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem('user')),
+      inputUsername: '',
+      inputPassword: '',
       errorMessage: null
     };
   },
   methods: {
     async makeLoginRequest() {
+      if (this.inputUsername.length === 0 || this.inputPassword.length === 0) {
+        this.errorMessage = "Please type username and password"
+        return
+      }
       this.errorMessage = null
       fetch(`http://127.0.0.1:5000/login`, {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),
         body: JSON.stringify({
-          username: "user1",
-          password: "user1",
+          username: this.inputUsername,
+          password: this.inputPassword,
         })
       })
           .then(response => response.json())
           .then(data => {
-            localStorage.setItem('user', JSON.stringify(data["user"]));
-            this.user = data["user"]
+            if (data["errors"]) {
+              this.errorMessage = data["errors"]
+            } else {
+              localStorage.setItem('user', JSON.stringify(data["user"]));
+              this.user = data["user"]
+            }
           })
           .catch(error => {
             this.errorMessage = error
