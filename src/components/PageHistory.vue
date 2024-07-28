@@ -1,5 +1,21 @@
 <template>
-  <div class="p-5 d-flex flex-column align-items-center">
+  <div class="px-5 pb-5 pt-1 d-flex flex-column align-items-center">
+
+    <div class="row w-75 py-4">
+      <div class="col text-muted d-flex flex-row align-items-center justify-content-end">
+        Sorting column:
+        <select class="custom-select ml-1 mr-3" id="sortColSelector" v-model="pageSettings.sort" style="width: 125px;">
+          <option value="date">date</option>
+          <option value="amount">operation cost</option>
+          <option value="user_balance">balance left</option>
+          <option value="operation_id">operation type</option>
+          <option value="operation_response">response</option>
+        </select>
+        Records per page:
+        <input type="number" class="form-control ml-1 mr-4" v-model="pageSettings.size" style="width: 75px;" min="1">
+      </div>
+    </div>
+
     <div v-if="fetchingData" class="spinner-border text-secondary" role="status"></div>
     <div v-if="errors" class="text-danger mb-4">{{ errors }}</div>
     <div v-if="records" class="w-100 d-flex justify-content-center">
@@ -31,7 +47,33 @@
         </tbody>
       </table>
     </div>
-    <b-button @click="getDataRequest" style="width: 300px; margin-top: 20px;">Fetch / update data</b-button>
+
+    <div class="row pt-4 pb-2">
+      <div class="col">
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            <li class="page-item" :class="{ disabled: pageSettings.number === 1 || !pageSettings.number }">
+              <button class="page-link" @click="changePage(pageSettings.number - 1)">Previous</button>
+            </li>
+            <li
+                class="page-item"
+                v-for="page in totalPages"
+                :key="page"
+                :class="{ active: pageSettings.number === page }"
+            >
+              <button class="page-link" @click="changePage(page)">
+                {{ page }}
+              </button>
+            </li>
+            <li class="page-item" :class="{ disabled: pageSettings.number === totalPages || !pageSettings.number }">
+              <button class="page-link" @click="changePage(pageSettings.number + 1)">Next</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <b-button @click="getDataRequest" style="width: 300px;">Fetch / update data</b-button>
     <div id="requestErrMsg" class="text-danger my-2"></div>
   </div>
 </template>
@@ -41,9 +83,20 @@ export default {
   data() {
     return {
       records: null,
+      pageSettings: {
+        number: null,
+        size: 20,
+        totalRecords: null,
+        sort: "date"
+      },
       fetchingData: false,
       errors: null
     };
+  },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.pageSettings.totalRecords / this.pageSettings.size);
+    }
   },
   methods: {
     async getDataRequest() {
@@ -54,7 +107,11 @@ export default {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),
-        body: JSON.stringify({})
+        body: JSON.stringify({
+          sort_col: this.pageSettings.sort,
+          page_size: this.pageSettings.size,
+          page_num: this.pageSettings.number
+        })
       })
           .then(response => response.json())
           .then(data => {
@@ -63,6 +120,10 @@ export default {
               this.errors = data["errors"]
             } else {
               this.records = data["records"]
+              this.pageSettings.number = data["pageNumber"]
+              this.pageSettings.size = data["pageSize"]
+              this.pageSettings.totalRecords = data["totalRecords"]
+              this.pageSettings.sort = data["sortColumn"]
             }
           })
           .catch(error => {
@@ -71,6 +132,12 @@ export default {
             console.error('Error:', error);
           });
     },
+    changePage(page) {
+      if (page > 0 && page <= this.totalPages) {
+        this.pageSettings.number = parseInt(page)
+        this.getDataRequest()
+      }
+    }
   },
 };
 </script>
