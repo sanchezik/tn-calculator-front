@@ -6,8 +6,8 @@
         <input type="number" class="form-control" id="param1" v-model="inputParam1" placeholder="Enter param 1">
       </div>
       <div class="form-group">
-        <label for="number">Parameter 2</label>
-        <input type="text" class="form-control" id="param2" v-model="inputParam2" placeholder="Enter param 2">
+        <label for="param2">Parameter 2</label>
+        <input type="number" class="form-control" id="param2" v-model="inputParam2" placeholder="Enter param 2">
       </div>
       <div class="form-group">
         <label for="operationSelector">Choose operation</label>

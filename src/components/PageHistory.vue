@@ -2,6 +2,9 @@
   <div class="px-5 pb-5 pt-1 d-flex flex-column align-items-center">
 
     <div class="row w-75 py-4">
+      <div class="col-3 d-flex flex-row align-items-center justify-content-start">
+        <input type="text" class="form-control ml-4" v-model="filterText" placeholder="Type to filter..."/>
+      </div>
       <div class="col text-muted d-flex flex-row align-items-center justify-content-end">
         Sorting column:
         <select class="custom-select ml-1 mr-3" id="sortColSelector" v-model="pageSettings.sort" style="width: 125px;">
@@ -37,7 +40,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(record, index) in records" :key="index">
+        <tr v-for="(record, index) in filteredRecords" :key="index">
           <td>{{ record.date }}</td>
           <td>{{ record.amount }}</td>
           <td>{{ record.user_balance }}</td>
@@ -83,6 +86,7 @@ export default {
   data() {
     return {
       records: null,
+      filterText: "",
       pageSettings: {
         number: null,
         size: 20,
@@ -96,7 +100,21 @@ export default {
   computed: {
     totalPages() {
       return Math.ceil(this.pageSettings.totalRecords / this.pageSettings.size);
-    }
+    },
+    filteredRecords() {
+      if (!this.filterText) {
+        return this.records;
+      }
+      return this.records.filter(record =>
+          Object.values(record).some(value =>
+              typeof value === 'object'
+                  ? Object.values(value).some(subValue =>
+                      subValue.toString().toLowerCase().includes(this.filterText.toLowerCase())
+                  )
+                  : value.toString().toLowerCase().includes(this.filterText.toLowerCase())
+          )
+      );
+    },
   },
   methods: {
     async getDataRequest() {
