@@ -2,8 +2,7 @@
   <div class="p-5 d-flex flex-column align-items-center">
     <div v-if="errorMessage" class="text-danger mb-3">{{ errorMessage }}</div>
     <div v-if="user">
-      <div class="mb-5 h3">Hello, {{ user.username }}</div>
-      <b-button @click="makeLogoutRequest" style="width: 300px;">Sign out</b-button>
+      <div class="h3">Hello, {{ user.username }}</div>
     </div>
     <div v-else>
       <div class="mb-3">
@@ -30,9 +29,14 @@
 
 <script>
 export default {
+  props: {
+    user: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
-      user: JSON.parse(localStorage.getItem('user')),
       inputUsername: '',
       inputPassword: '',
       errorMessage: null
@@ -60,31 +64,12 @@ export default {
               this.errorMessage = data["errors"]
             } else {
               localStorage.setItem('user', JSON.stringify(data["user"]));
-              this.user = data["user"]
+              this.$emit('update-user', data["user"]);
             }
           })
           .catch(error => {
             this.errorMessage = error
             console.error('Error:', error);
-          });
-    },
-    async makeLogoutRequest() {
-      this.errorMessage = null
-      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/logout`, {
-        method: "POST",
-        credentials: "include",
-        headers: new Headers({'content-type': 'application/json'}),
-        body: JSON.stringify({})
-      })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-            localStorage.setItem('user', JSON.stringify(null));
-            this.user = null
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            this.errorMessage = error
           });
     },
   },
