@@ -29,7 +29,7 @@ export default {
   methods: {
     async makeLogoutRequest() {
       this.errorMessage = null
-      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/logout`, {
+      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/api/v1/logout`, {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),

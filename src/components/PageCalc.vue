@@ -62,7 +62,7 @@ export default {
       this.errorMessage = null
       this.fetchingData = true
       this.response = null
-      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/do-math`, {
+      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/api/v1/do-math`, {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),

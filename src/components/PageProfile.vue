@@ -49,7 +49,7 @@ export default {
         return
       }
       this.errorMessage = null
-      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/login`, {
+      fetch(`http://ec2-15-229-250-69.sa-east-1.compute.amazonaws.com:5000/api/v1/login`, {
         method: "POST",
         credentials: "include",
         headers: new Headers({'content-type': 'application/json'}),
